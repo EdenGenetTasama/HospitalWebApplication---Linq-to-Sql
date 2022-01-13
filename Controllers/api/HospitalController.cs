@@ -18,8 +18,8 @@ namespace HospitalWebApplication.Controllers.api
         {
             try
             {
-                List <Hospital> hospitals = datacontext.Hospitals.ToList();
-                return Ok(new { hospitals});
+                List<Hospital> hospitals = datacontext.Hospitals.ToList();
+                return Ok(new { hospitals });
             }
             catch (SqlException ex)
             {
@@ -37,7 +37,7 @@ namespace HospitalWebApplication.Controllers.api
         {
             try
             {
-                Hospital hospitalById = datacontext.Hospitals.First(item =>  item.Id == id);
+                Hospital hospitalById = datacontext.Hospitals.First(item => item.Id == id);
                 return Ok(new { hospitalById });
             }
             catch (SqlException ex)
@@ -54,13 +54,11 @@ namespace HospitalWebApplication.Controllers.api
         // POST: api/Hospital
         public IHttpActionResult Post([FromBody] Hospital hospitalPost)
         {
-            datacontext.Hospitals.InsertOnSubmit(hospitalPost);
-            datacontext.SubmitChanges();
-            return Ok("addd");
             try
             {
-
-                return Ok();
+                datacontext.Hospitals.InsertOnSubmit(hospitalPost);
+                datacontext.SubmitChanges();
+                return Ok("addd");
             }
             catch (SqlException ex)
             {
@@ -74,12 +72,23 @@ namespace HospitalWebApplication.Controllers.api
         }
 
         // PUT: api/Hospital/5
-        public IHttpActionResult Put(int id, [FromBody]string value)
+        public IHttpActionResult Put(int id, [FromBody] Hospital hospitalNeedToUpdate)
         {
             try
             {
+                Hospital hostiptalObject = datacontext.Hospitals.First(item => item.Id == id);
+                if (hostiptalObject != null)
+                {
+                    hostiptalObject.firstName = hospitalNeedToUpdate.firstName;
+                    hostiptalObject.lastName = hospitalNeedToUpdate.lastName;
+                    hostiptalObject.payment = hospitalNeedToUpdate.payment;
+                    hostiptalObject.hoursOfWOrk = hospitalNeedToUpdate.hoursOfWOrk;
+                    hostiptalObject.yearBirth = hospitalNeedToUpdate.yearBirth;
 
-                return Ok();
+
+                }
+                datacontext.SubmitChanges();
+                return Ok("Update");
             }
             catch (SqlException ex)
             {
@@ -97,8 +106,14 @@ namespace HospitalWebApplication.Controllers.api
         {
             try
             {
+                Hospital hospitalToDelete = datacontext.Hospitals.First(item => item.Id ==id);
+                if (hospitalToDelete != null)
+                {
+                    datacontext.Hospitals.DeleteOnSubmit(hospitalToDelete);
+                }
 
-                return Ok();
+                datacontext.SubmitChanges();
+                return Ok("Delete");
             }
             catch (SqlException ex)
             {
